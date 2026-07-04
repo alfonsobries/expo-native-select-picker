@@ -1,0 +1,10 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "paths": {
+      "expo-ios-select-picker": ["../src/index"],
+      "expo-ios-select-picker/*": ["../src/*"]
+    }
+  }
+}
