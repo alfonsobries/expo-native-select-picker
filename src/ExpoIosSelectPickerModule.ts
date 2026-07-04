@@ -1,7 +1,15 @@
-import { NativeModule, requireNativeModule } from 'expo';
+import { NativeModule, requireOptionalNativeModule } from 'expo';
 
-declare class ExpoIosSelectPickerModule extends NativeModule<{}> {
-  setValueAsync(value: string): Promise<void>;
+import { SelectPickerOptions } from './ExpoIosSelectPicker.types';
+
+declare class ExpoIosSelectPickerModule extends NativeModule<Record<string, never>> {
+  /**
+   * Presents the native option list sheet; resolves with the picked value, or
+   * null when dismissed without picking.
+   */
+  presentAsync(options: SelectPickerOptions): Promise<string | null>;
 }
 
-export default requireNativeModule<ExpoIosSelectPickerModule>('ExpoIosSelectPicker');
+// Null on platforms without the native implementation (Android); the public
+// helper degrades gracefully instead of throwing at import time.
+export default requireOptionalNativeModule<ExpoIosSelectPickerModule>('ExpoIosSelectPicker');

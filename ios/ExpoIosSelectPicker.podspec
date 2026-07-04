@@ -1,15 +1,15 @@
 Pod::Spec.new do |s|
   s.name           = 'ExpoIosSelectPicker'
   s.version        = '1.0.0'
-  s.summary        = 'A sample project summary'
-  s.description    = 'A sample project description'
-  s.author         = ''
-  s.homepage       = 'https://docs.expo.dev/modules/'
+  s.summary        = 'Native iOS select picker: the settings-style option list'
+  s.description    = 'Presents the system settings-style option list (native search, A-Z sections with the side index, checkmark on the selected row) and resolves with the picked value.'
+  s.author         = 'Alfonso Bribiesca'
+  s.homepage       = 'https://github.com/alfonsobries/expo-ios-select-picker'
   s.platforms      = {
     :ios => '16.4',
     :tvos => '16.4'
   }
-  s.source         = { git: '' }
+  s.source         = { git: 'https://github.com/alfonsobries/expo-ios-select-picker.git' }
   s.static_framework = true
 
   s.dependency 'ExpoModulesCore'
