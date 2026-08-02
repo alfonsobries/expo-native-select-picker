@@ -6,7 +6,7 @@ module.exports = async (env, argv) => {
     {
       ...env,
       babel: {
-        dangerouslyAddModulePathsToTranspile: ['expo-native-select'],
+        dangerouslyAddModulePathsToTranspile: ['expo-native-select-picker'],
       },
     },
     argv

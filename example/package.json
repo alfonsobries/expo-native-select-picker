@@ -1,5 +1,5 @@
 {
-  "name": "expo-native-select-example",
+  "name": "expo-native-select-picker-example",
   "version": "1.0.0",
   "main": "index.ts",
   "dependencies": {

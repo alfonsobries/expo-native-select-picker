@@ -1,4 +1,4 @@
-import { pickOption } from 'expo-native-select';
+import { pickOption } from 'expo-native-select-picker';
 import { useState } from 'react';
 import { Button, SafeAreaView, ScrollView, Text, View } from 'react-native';
 
@@ -33,7 +33,7 @@ export default function App() {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.container}>
-        <Text style={styles.header}>expo-native-select</Text>
+        <Text style={styles.header}>expo-native-select-picker</Text>
 
         <Group name="Searchable list, preselected">
           <Button

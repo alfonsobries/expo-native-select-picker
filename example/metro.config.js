@@ -20,7 +20,7 @@ config.resolver.nodeModulesPaths = [
 ];
 
 config.resolver.extraNodeModules = {
-  'expo-native-select': '..',
+  'expo-native-select-picker': '..',
 };
 
 config.watchFolders = [path.resolve(__dirname, '..')];

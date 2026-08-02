@@ -1,4 +1,4 @@
-package expo.modules.nativeselect
+package expo.modules.nativeselectpicker
 
 import android.graphics.Canvas
 import android.graphics.ColorFilter

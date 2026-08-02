@@ -1,4 +1,4 @@
-package expo.modules.nativeselect
+package expo.modules.nativeselectpicker
 
 import expo.modules.kotlin.Promise
 import expo.modules.kotlin.exception.Exceptions
@@ -54,9 +54,9 @@ class SelectColors : Record {
   var accent: String? = null
 }
 
-class ExpoNativeSelectModule : Module() {
+class ExpoNativeSelectPickerModule : Module() {
   override fun definition() = ModuleDefinition {
-    Name("ExpoNativeSelect")
+    Name("ExpoNativeSelectPicker")
 
     AsyncFunction("presentAsync") { options: SelectPresentOptions, promise: Promise ->
       val activity = appContext.activityProvider?.currentActivity

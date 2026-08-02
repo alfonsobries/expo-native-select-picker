@@ -2,7 +2,7 @@ import { pickOption } from '../index';
 
 const mockPresentAsync = jest.fn();
 
-jest.mock('../ExpoNativeSelectModule', () => ({
+jest.mock('../ExpoNativeSelectPickerModule', () => ({
   __esModule: true,
   get default() {
     return { presentAsync: mockPresentAsync };

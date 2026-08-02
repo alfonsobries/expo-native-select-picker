@@ -1,11 +1,11 @@
-import { SelectPickerOptions } from './ExpoNativeSelect.types';
-import ExpoNativeSelectModule from './ExpoNativeSelectModule';
+import { SelectPickerOptions } from './ExpoNativeSelectPicker.types';
+import ExpoNativeSelectPickerModule from './ExpoNativeSelectPickerModule';
 
 export type {
   SelectOption,
   SelectPickerColors,
   SelectPickerOptions,
-} from './ExpoNativeSelect.types';
+} from './ExpoNativeSelectPicker.types';
 
 /**
  * Opens the native iOS option list (the settings-style sheet: searchable,
@@ -14,8 +14,8 @@ export type {
  * Resolves null on platforms without the native implementation.
  */
 export async function pickOption(options: SelectPickerOptions): Promise<string | null> {
-  if (!ExpoNativeSelectModule) {
+  if (!ExpoNativeSelectPickerModule) {
     return null;
   }
-  return ExpoNativeSelectModule.presentAsync(options);
+  return ExpoNativeSelectPickerModule.presentAsync(options);
 }
