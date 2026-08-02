@@ -22,6 +22,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -121,6 +122,14 @@ internal class SelectListDialog(
         }
       )
       setGravity(if (presentsAsSheet) Gravity.BOTTOM else Gravity.TOP)
+      // Draw behind the gesture bar: a sheet that stops above it leaves a
+      // band of dimmed app between the sheet and the edge of the screen.
+      // The insets listener puts the padding back inside, so nothing lands
+      // under the bar itself.
+      WindowCompat.setDecorFitsSystemWindows(this, false)
+      if (presentsAsSheet) {
+        addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+      }
     }
     setOnCancelListener { finish(null) }
     rebuild(null)
@@ -193,9 +202,9 @@ internal class SelectListDialog(
       sheet.addView(
         TextView(activity).apply {
           text = title
-          textSize = 17f
-          setTextColor(labelColor)
-          setPadding(dp(20), dp(14), dp(20), dp(6))
+          textSize = 13f
+          setTextColor(mutedColor)
+          setPadding(dp(20), dp(14), dp(20), dp(4))
           maxLines = 1
         },
         LinearLayout.LayoutParams(MATCH, WRAP)
