@@ -1,6 +1,6 @@
 {
   "name": "expo-native-select-picker",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Native iOS select picker for Expo — the settings-style option list with search, A–Z index, and checkmark",
   "main": "build/index.js",
   "types": "build/index.d.ts",
