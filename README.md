@@ -17,6 +17,19 @@ Native select picker for Expo and React Native, on **iOS and Android**: the **se
   </picture>
 </p>
 
+<p align="center">
+  <em>iOS: the system page sheet.</em>
+</p>
+
+<p align="center">
+  <img src="docs/android-default.png" alt="Android full-screen dialog with the app theme's own surface" width="270">
+  <img src="docs/android-colors.png" alt="The same dialog wearing an app's design system colors" width="270">
+</p>
+
+<p align="center">
+  <em>Android: the full-screen dialog, with the app theme (left) and with <code>colors</code> (right).</em>
+</p>
+
 - 🍎 **Real native UI on iOS** — `UITableViewController` + `UISearchController`, exactly what Settings uses. Not a re-implementation.
 - 🤖 **Real native UI on Android** — a full-screen dialog with a `RecyclerView`, drawn from your theme attributes. No Material dependency, no theme forced onto your activity.
 - 🔍 **Search** — diacritic-insensitive ("mexico" finds "México"), disable it for short lists.
