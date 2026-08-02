@@ -35,6 +35,10 @@ class SelectPresentOptions : Record {
   @Field
   var grouped: Boolean? = null
 
+  /** "auto" (default), "sheet" or "fullScreen". */
+  @Field
+  var presentation: String = "auto"
+
   @Field
   var colors: SelectColors? = null
 }

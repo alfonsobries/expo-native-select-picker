@@ -31,6 +31,7 @@ Native select picker for Expo and React Native, on **iOS and Android**: the **se
 </p>
 
 - 🍎 **Real native UI on iOS** — `UITableViewController` + `UISearchController`, exactly what Settings uses. Not a re-implementation.
+- 📐 **Sized to its content** — a handful of options rests as a bottom sheet with a grabber, a long list takes the screen. Override with `presentation`.
 - 🤖 **Real native UI on Android** — a full-screen dialog with a `RecyclerView`, drawn from your theme attributes. No Material dependency, no theme forced onto your activity.
 - 🔍 **Search** — diacritic-insensitive ("mexico" finds "México"), disable it for short lists.
 - 🔤 **A–Z sections + index on the edge** — automatic for long lists, controllable via `grouped`.
@@ -126,6 +127,7 @@ Presents the option list natively — a page sheet on iOS, a full-screen dialog 
 | `searchable`        | `boolean`            | `true`    | Native search bar; matching is case- and diacritic-insensitive.                  |
 | `searchPlaceholder` | `string`             | system    | Placeholder of the search bar.                                                   |
 | `grouped`           | `boolean`            | automatic | A–Z sections with the index on the edge. Automatic turns it on at 30+ options.   |
+| `presentation`      | `'auto' \| 'sheet' \| 'fullScreen'` | `'auto'` | `auto` rests short lists (≤8, unsearchable, ungrouped) in a content-height sheet and sends the rest full screen. |
 | `colors`            | `SelectPickerColors` | theme     | Android only. See below.                                                         |
 
 Grouping keys on the first _letter_ of each label, so a leading flag or emoji doesn't affect it; labels that start with no letter land under `#`.

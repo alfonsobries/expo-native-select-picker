@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -21,6 +22,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -28,9 +30,14 @@ import java.text.Normalizer
 import java.util.Locale
 
 /**
- * The Android answer to the settings-style option list: a full-screen
- * dialog with a close action, a search field, A–Z sections and an index
- * strip on the edge, and a check on the current value.
+ * The Android answer to the settings-style option list: a close action, a
+ * search field, A–Z sections with an index strip on the edge, and a check
+ * on the current value.
+ *
+ * **The list is sized to what it holds.** A handful of options comes up as
+ * a bottom sheet the height of its rows, with a grabber; a long one takes
+ * the screen. Sending three options full-screen is ceremony, and pushing a
+ * long list into a sheet leaves it scrolling inside a scroll.
  *
  * Chrome is drawn from theme attributes rather than a Material theme, so
  * the dialog inherits the host app's colors and dark mode without forcing
@@ -44,6 +51,8 @@ internal class SelectListDialog(
 
   private companion object {
     const val AUTO_GROUP_THRESHOLD = 30
+    /** Rows that still fit a sheet without it swallowing the screen. */
+    const val SHEET_MAX_ROWS = 8
     const val TYPE_HEADER = 0
     const val TYPE_OPTION = 1
   }
@@ -65,6 +74,18 @@ internal class SelectListDialog(
   private val grouped: Boolean
     get() = options.grouped ?: (options.options.size >= AUTO_GROUP_THRESHOLD)
 
+  /**
+   * `auto` reads the list: a short one with nothing to search or index has
+   * no use for a whole screen and comes up as a sheet the height of its own
+   * rows. `sheet` and `fullScreen` say it outright.
+   */
+  private val presentsAsSheet: Boolean
+    get() = when (options.presentation) {
+      "sheet" -> true
+      "fullScreen" -> false
+      else -> !options.searchable && !grouped && options.options.size <= SHEET_MAX_ROWS
+    }
+
   // The caller's design system wins; the platform theme is the fallback.
   private val labelColor by lazy {
     parseColor(options.colors?.label) ?: themeColor(android.R.attr.textColorPrimary, Color.BLACK)
@@ -84,17 +105,27 @@ internal class SelectListDialog(
     requestWindowFeature(Window.FEATURE_NO_TITLE)
     setContentView(buildContent())
 
-    // A full-screen dialog, not a floating card: without clearing the
-    // window's own background and padding the app leaks around the edges
-    // and it reads as a sheet that failed to open.
+    // Either way the window's own background and padding go: left in, the
+    // app leaks around the edges and it reads as a sheet that failed to
+    // open. The sheet paints its own rounded surface underneath.
     window?.apply {
-      setBackgroundDrawable(ColorDrawable(surfaceColor))
+      setBackgroundDrawable(
+        if (presentsAsSheet) ColorDrawable(Color.TRANSPARENT) else ColorDrawable(surfaceColor)
+      )
       decorView.setPadding(0, 0, 0, 0)
+      // The window takes the screen either way. A sheet is a surface
+      // anchored to the bottom *inside* it, not a shorter window: a window
+      // that ends where its content ends stops above the gesture bar and
+      // leaves a band of dimmed app under the sheet.
       setLayout(
         WindowManager.LayoutParams.MATCH_PARENT,
         WindowManager.LayoutParams.MATCH_PARENT
       )
       setGravity(Gravity.TOP)
+      WindowCompat.setDecorFitsSystemWindows(this, false)
+      // Without this the system paints its own bar over the bottom of the
+      // sheet and the surface stops short of the edge.
+      navigationBarColor = Color.TRANSPARENT
     }
     setOnCancelListener { finish(null) }
     rebuild(null)
@@ -110,6 +141,10 @@ internal class SelectListDialog(
   // MARK: - Views
 
   private fun buildContent(): View {
+    if (presentsAsSheet) {
+      return buildSheet()
+    }
+
     val root = LinearLayout(activity).apply {
       orientation = LinearLayout.VERTICAL
       setBackgroundColor(surfaceColor)
@@ -131,6 +166,72 @@ internal class SelectListDialog(
     root.addView(buildList(), LinearLayout.LayoutParams(MATCH, 0, 1f))
 
     return root
+  }
+
+  /**
+   * The short form: a sheet the height of its rows, with the grabber that
+   * says it can be dismissed and the same rows as the full-screen list.
+   */
+  private fun buildSheet(): View {
+    // Tapping the app above the sheet dismisses it, the way every sheet
+    // does; the sheet itself swallows its own touches.
+    val scrim = FrameLayout(activity).apply {
+      setOnClickListener {
+        finish(null)
+        dismiss()
+      }
+    }
+
+    val sheet = LinearLayout(activity).apply {
+      isClickable = true
+      orientation = LinearLayout.VERTICAL
+      background = GradientDrawable().apply {
+        setColor(surfaceColor)
+        val radius = dp(28).toFloat()
+        cornerRadii = floatArrayOf(radius, radius, radius, radius, 0f, 0f, 0f, 0f)
+      }
+      ViewCompat.setOnApplyWindowInsetsListener(this) { view, insets ->
+        val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+        view.setPadding(0, dp(10), 0, bars.bottom + dp(8))
+        insets
+      }
+    }
+
+    sheet.addView(
+      grabber(),
+      LinearLayout.LayoutParams(dp(36), dp(4)).apply {
+        gravity = Gravity.CENTER_HORIZONTAL
+      }
+    )
+
+    options.title?.takeIf { it.isNotBlank() }?.let { title ->
+      sheet.addView(
+        TextView(activity).apply {
+          text = title
+          textSize = 13f
+          setTextColor(mutedColor)
+          setPadding(dp(20), dp(14), dp(20), dp(4))
+          maxLines = 1
+        },
+        LinearLayout.LayoutParams(MATCH, WRAP)
+      )
+    }
+
+    sheet.addView(buildList(), LinearLayout.LayoutParams(MATCH, WRAP))
+
+    scrim.addView(
+      sheet,
+      FrameLayout.LayoutParams(MATCH, WRAP, Gravity.BOTTOM)
+    )
+
+    return scrim
+  }
+
+  private fun grabber(): View = View(activity).apply {
+    background = GradientDrawable().apply {
+      setColor(withAlpha(mutedColor, 0.4f))
+      cornerRadius = dp(2).toFloat()
+    }
   }
 
   private fun buildHeader(): View {
@@ -204,7 +305,10 @@ internal class SelectListDialog(
       adapter = this@SelectListDialog.adapter
       isVerticalScrollBarEnabled = true
     }
-    container.addView(list, FrameLayout.LayoutParams(MATCH, MATCH))
+    container.addView(
+      list,
+      FrameLayout.LayoutParams(MATCH, if (presentsAsSheet) WRAP else MATCH)
+    )
 
     indexStrip = LinearLayout(activity).apply {
       orientation = LinearLayout.VERTICAL
@@ -410,6 +514,9 @@ internal class SelectListDialog(
     activity.theme.resolveAttribute(attr, value, true)
     ContextCompat.getDrawable(activity, value.resourceId)
   }
+
+  private fun withAlpha(color: Int, alpha: Float): Int =
+    Color.argb((alpha * 255).toInt(), Color.red(color), Color.green(color), Color.blue(color))
 
   private fun parseColor(value: String?): Int? {
     val hex = value?.trim()?.takeIf { it.isNotEmpty() } ?: return null

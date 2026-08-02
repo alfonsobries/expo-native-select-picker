@@ -14,6 +14,8 @@ struct SelectPresentOptions: Record {
   @Field var searchPlaceholder: String?
   // A–Z sections with the side index. nil = automatic (on for long lists).
   @Field var grouped: Bool?
+  // "auto" (default), "sheet" or "fullScreen".
+  @Field var presentation: String = "auto"
 }
 
 public class ExpoNativeSelectPickerModule: Module {
@@ -32,6 +34,21 @@ public class ExpoNativeSelectPickerModule: Module {
       let navigation = UINavigationController(rootViewController: controller)
       navigation.modalPresentationStyle = .pageSheet
       navigation.presentationController?.delegate = controller
+
+      // A short list rests at the height of its own rows, with the grabber
+      // that says it can be pulled away; a long one keeps the full sheet.
+      if SelectListViewController.presentsAsSheet(options),
+        let sheet = navigation.sheetPresentationController
+      {
+        let content = SelectListViewController.sheetHeight(for: options)
+        sheet.detents = [
+          .custom(identifier: .init("fitsContent")) { context in
+            min(content, context.maximumDetentValue)
+          }
+        ]
+        sheet.prefersGrabberVisible = true
+      }
+
       presenter.present(navigation, animated: true)
     }
     .runOnQueue(.main)
@@ -70,6 +87,27 @@ final class SelectListViewController: UITableViewController, UISearchResultsUpda
     options.grouped ?? (options.options.count >= Self.autoGroupThreshold)
   }
 
+  /// Rows that still fit a sheet without it swallowing the screen.
+  private static let sheetMaxRows = 8
+  private static let rowHeight: CGFloat = 44
+  private static let barHeight: CGFloat = 56
+
+  /// `auto` reads the list: short, unsearchable and ungrouped rests at its
+  /// own height. `sheet` and `fullScreen` say it outright.
+  static func presentsAsSheet(_ options: SelectPresentOptions) -> Bool {
+    switch options.presentation {
+    case "sheet": return true
+    case "fullScreen": return false
+    default:
+      let grouped = options.grouped ?? (options.options.count >= autoGroupThreshold)
+      return !options.searchable && !grouped && options.options.count <= sheetMaxRows
+    }
+  }
+
+  static func sheetHeight(for options: SelectPresentOptions) -> CGFloat {
+    barHeight + CGFloat(options.options.count) * rowHeight + 16
+  }
+
   init(options: SelectPresentOptions, onFinish: @escaping (String?) -> Void) {
     self.options = options
     self.onFinish = onFinish
@@ -85,11 +123,16 @@ final class SelectListViewController: UITableViewController, UISearchResultsUpda
     super.viewDidLoad()
 
     title = options.title
-    navigationItem.leftBarButtonItem = UIBarButtonItem(
-      barButtonSystemItem: .close,
-      target: self,
-      action: #selector(handleClose)
-    )
+
+    // The grabber already says how a sheet goes away; a close button next
+    // to it is one control too many.
+    if !Self.presentsAsSheet(options) {
+      navigationItem.leftBarButtonItem = UIBarButtonItem(
+        barButtonSystemItem: .close,
+        target: self,
+        action: #selector(handleClose)
+      )
+    }
 
     if options.searchable {
       let search = UISearchController(searchResultsController: nil)
