@@ -113,23 +113,19 @@ internal class SelectListDialog(
         if (presentsAsSheet) ColorDrawable(Color.TRANSPARENT) else ColorDrawable(surfaceColor)
       )
       decorView.setPadding(0, 0, 0, 0)
+      // The window takes the screen either way. A sheet is a surface
+      // anchored to the bottom *inside* it, not a shorter window: a window
+      // that ends where its content ends stops above the gesture bar and
+      // leaves a band of dimmed app under the sheet.
       setLayout(
         WindowManager.LayoutParams.MATCH_PARENT,
-        if (presentsAsSheet) {
-          WindowManager.LayoutParams.WRAP_CONTENT
-        } else {
-          WindowManager.LayoutParams.MATCH_PARENT
-        }
+        WindowManager.LayoutParams.MATCH_PARENT
       )
-      setGravity(if (presentsAsSheet) Gravity.BOTTOM else Gravity.TOP)
-      // Draw behind the gesture bar: a sheet that stops above it leaves a
-      // band of dimmed app between the sheet and the edge of the screen.
-      // The insets listener puts the padding back inside, so nothing lands
-      // under the bar itself.
+      setGravity(Gravity.TOP)
       WindowCompat.setDecorFitsSystemWindows(this, false)
-      if (presentsAsSheet) {
-        addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-      }
+      // Without this the system paints its own bar over the bottom of the
+      // sheet and the surface stops short of the edge.
+      navigationBarColor = Color.TRANSPARENT
     }
     setOnCancelListener { finish(null) }
     rebuild(null)
@@ -177,7 +173,17 @@ internal class SelectListDialog(
    * says it can be dismissed and the same rows as the full-screen list.
    */
   private fun buildSheet(): View {
+    // Tapping the app above the sheet dismisses it, the way every sheet
+    // does; the sheet itself swallows its own touches.
+    val scrim = FrameLayout(activity).apply {
+      setOnClickListener {
+        finish(null)
+        dismiss()
+      }
+    }
+
     val sheet = LinearLayout(activity).apply {
+      isClickable = true
       orientation = LinearLayout.VERTICAL
       background = GradientDrawable().apply {
         setColor(surfaceColor)
@@ -213,7 +219,12 @@ internal class SelectListDialog(
 
     sheet.addView(buildList(), LinearLayout.LayoutParams(MATCH, WRAP))
 
-    return sheet
+    scrim.addView(
+      sheet,
+      FrameLayout.LayoutParams(MATCH, WRAP, Gravity.BOTTOM)
+    )
+
+    return scrim
   }
 
   private fun grabber(): View = View(activity).apply {
