@@ -122,10 +122,17 @@ internal class SelectListDialog(
         WindowManager.LayoutParams.MATCH_PARENT
       )
       setGravity(Gravity.TOP)
+      // A dialog window does not go edge-to-edge on its own: without all
+      // three the surface stops above the gesture bar and the system paints
+      // its own bar over the gap.
       WindowCompat.setDecorFitsSystemWindows(this, false)
-      // Without this the system paints its own bar over the bottom of the
-      // sheet and the surface stops short of the edge.
+      addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
       navigationBarColor = Color.TRANSPARENT
+      // Android draws a scrim over a transparent bar unless told not to,
+      // and that scrim is what reads as a black band under the sheet.
+      if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+        isNavigationBarContrastEnforced = false
+      }
     }
     setOnCancelListener { finish(null) }
     rebuild(null)
