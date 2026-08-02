@@ -19,6 +19,16 @@ export type SelectPickerOptions = {
    */
   grouped?: boolean;
   /**
+   * How the list comes up.
+   *
+   * - `auto` (default): a short list with nothing to search or index rests
+   *   at the height of its own rows, as a bottom sheet with a grabber;
+   *   anything longer takes the screen.
+   * - `sheet`: always the sheet, however long the list.
+   * - `fullScreen`: always the full-height list.
+   */
+  presentation?: 'auto' | 'sheet' | 'fullScreen';
+  /**
    * Colors, so the list can wear a design system instead of the platform
    * defaults. Any CSS-style hex string (`#111827`, `#fff`). Anything left
    * out falls back to the system color.
