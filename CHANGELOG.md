@@ -1,3 +1,10 @@
+# [0.3.0](https://github.com/alfonsobries/expo-native-select-picker/compare/v0.2.0...v0.3.0) (2026-08-02)
+
+
+### Features
+
+* short lists rest in a content-height sheet ([#2](https://github.com/alfonsobries/expo-native-select-picker/issues/2)) ([4cb618f](https://github.com/alfonsobries/expo-native-select-picker/commit/4cb618f4893dd2b6644468adf24246fd5664b1b3))
+
 # [0.2.0](https://github.com/alfonsobries/expo-native-select-picker/compare/v0.1.0...v0.2.0) (2026-08-02)
 
 
