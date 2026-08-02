@@ -1,10 +1,10 @@
-# expo-ios-select-picker
+# expo-native-select-picker
 
-[![npm version](https://img.shields.io/npm/v/expo-ios-select-picker.svg)](https://www.npmjs.com/package/expo-ios-select-picker)
-[![CI](https://github.com/alfonsobries/expo-ios-select-picker/actions/workflows/ci.yml/badge.svg)](https://github.com/alfonsobries/expo-ios-select-picker/actions/workflows/ci.yml)
-[![license](https://img.shields.io/npm/l/expo-ios-select-picker.svg)](./LICENSE)
+[![npm version](https://img.shields.io/npm/v/expo-native-select-picker.svg)](https://www.npmjs.com/package/expo-native-select-picker)
+[![CI](https://github.com/alfonsobries/expo-native-select-picker/actions/workflows/ci.yml/badge.svg)](https://github.com/alfonsobries/expo-native-select-picker/actions/workflows/ci.yml)
+[![license](https://img.shields.io/npm/l/expo-native-select-picker.svg)](./LICENSE)
 
-Native iOS select picker for Expo and React Native: the **settings-style option list** — the same UIKit table iOS uses to pick your region — with a native search bar, A–Z sections with the side index, and a checkmark on the selected row. Call it from any trigger and it resolves with the picked value, like a `<select>` should.
+Native select picker for Expo and React Native, on **iOS and Android**: the **settings-style option list** — the same table each platform uses to pick your region — with a search field, A–Z sections with the index on the edge, and a check on the selected row. Call it from any trigger and it resolves with the picked value, like a `<select>` should.
 
 <p align="center">
   <picture>
@@ -17,24 +17,39 @@ Native iOS select picker for Expo and React Native: the **settings-style option 
   </picture>
 </p>
 
-- 🍎 **Real native UI** — `UITableViewController` + `UISearchController`, exactly what Settings uses. Not a re-implementation.
-- 🔍 **Native search** — diacritic-insensitive ("mexico" finds "México"), disable it for short lists.
-- 🔤 **A–Z sections + side index** — automatic for long lists, controllable via `grouped`.
-- ✅ **Checkmark** on the current value; emoji in labels (flags!) work and don't break grouping.
+<p align="center">
+  <em>iOS: the system page sheet.</em>
+</p>
+
+<p align="center">
+  <img src="docs/android-default.png" alt="Android full-screen dialog with the app theme's own surface" width="270">
+  <img src="docs/android-colors.png" alt="The same dialog wearing an app's design system colors" width="270">
+</p>
+
+<p align="center">
+  <em>Android: the full-screen dialog, with the app theme (left) and with <code>colors</code> (right).</em>
+</p>
+
+- 🍎 **Real native UI on iOS** — `UITableViewController` + `UISearchController`, exactly what Settings uses. Not a re-implementation.
+- 🤖 **Real native UI on Android** — a full-screen dialog with a `RecyclerView`, drawn from your theme attributes. No Material dependency, no theme forced onto your activity.
+- 🔍 **Search** — diacritic-insensitive ("mexico" finds "México"), disable it for short lists.
+- 🔤 **A–Z sections + index on the edge** — automatic for long lists, controllable via `grouped`.
+- ✅ **Check** on the current value; emoji in labels (flags!) work and don't break grouping.
+- 🎨 **Wears your design system** — optional `colors` on Android, where the platform surface belongs to no one.
 - 🎯 **Headless** — trigger from any button or field; there's no UI to style.
-- 🪶 **Zero dependencies.**
+- 🪶 **No JavaScript dependencies.**
 
 ## Requirements
 
-- iOS 16+
+- iOS 16+ / Android 7+ (API 24)
 - Expo SDK 52+ with a [development build](https://docs.expo.dev/develop/development-builds/introduction/) or a bare React Native app with Expo Modules — this package includes native code, so it does **not** run in Expo Go.
 
-On Android and web the helper resolves `null` so cross-platform code doesn't need guards.
+On web the helper resolves `null` so cross-platform code doesn't need guards.
 
 ## Installation
 
 ```sh
-npx expo install expo-ios-select-picker
+npx expo install expo-native-select-picker
 ```
 
 Then rebuild your development build (`npx expo run:ios` or an EAS build). If you manage OTA updates with a fixed `runtimeVersion`, adding this package is a native change — bump it.
@@ -42,7 +57,7 @@ Then rebuild your development build (`npx expo run:ios` or an EAS build). If you
 ## Usage
 
 ```tsx
-import { pickOption } from 'expo-ios-select-picker';
+import { pickOption } from 'expo-native-select-picker';
 
 const value = await pickOption({
   title: 'Country',
@@ -88,8 +103,7 @@ function Select({ label, value, onChange, options }) {
         if (picked !== null) {
           onChange(picked);
         }
-      }}
-    >
+      }}>
       <Text>{options.find((option) => option.value === value)?.label ?? 'Select…'}</Text>
     </Pressable>
   );
@@ -100,20 +114,41 @@ function Select({ label, value, onChange, options }) {
 
 ### `pickOption(options): Promise<string | null>`
 
-Presents the option list as a native sheet and resolves with the picked `value`, or `null` when dismissed without picking (close button or swipe).
+Presents the option list natively — a page sheet on iOS, a full-screen dialog on Android — and resolves with the picked `value`, or `null` when dismissed without picking (close button, swipe, or back gesture).
 
 ### `SelectPickerOptions`
 
-| Option              | Type             | Default   | Description                                                                     |
-| ------------------- | ---------------- | --------- | ------------------------------------------------------------------------------- |
-| `options`           | `SelectOption[]` | —         | The list to pick from: `{ value: string, label: string }`. Emoji in labels work. |
-| `title`             | `string`         | —         | Navigation-bar title of the sheet.                                               |
-| `selectedValue`     | `string`         | —         | Value shown with a checkmark.                                                    |
-| `searchable`        | `boolean`        | `true`    | Native search bar; matching is case- and diacritic-insensitive.                  |
-| `searchPlaceholder` | `string`         | system    | Placeholder of the search bar.                                                   |
-| `grouped`           | `boolean`        | automatic | A–Z sections with the side index. Automatic turns it on at 30+ options.          |
+| Option              | Type                 | Default   | Description                                                                      |
+| ------------------- | -------------------- | --------- | -------------------------------------------------------------------------------- |
+| `options`           | `SelectOption[]`     | —         | The list to pick from: `{ value: string, label: string }`. Emoji in labels work. |
+| `title`             | `string`             | —         | Navigation-bar title of the sheet.                                               |
+| `selectedValue`     | `string`             | —         | Value shown with a checkmark.                                                    |
+| `searchable`        | `boolean`            | `true`    | Native search bar; matching is case- and diacritic-insensitive.                  |
+| `searchPlaceholder` | `string`             | system    | Placeholder of the search bar.                                                   |
+| `grouped`           | `boolean`            | automatic | A–Z sections with the index on the edge. Automatic turns it on at 30+ options.   |
+| `colors`            | `SelectPickerColors` | theme     | Android only. See below.                                                         |
 
-Grouping keys on the first *letter* of each label, so a leading flag or emoji doesn't affect it; labels that start with no letter land under `#`.
+Grouping keys on the first _letter_ of each label, so a leading flag or emoji doesn't affect it; labels that start with no letter land under `#`.
+
+### `SelectPickerColors` — Android only
+
+Android's default surface is a grey that belongs to no design system, so the list can be told your colors. Anything left out falls back to the app's theme.
+
+| Color        | What it paints                                         |
+| ------------ | ------------------------------------------------------ |
+| `background` | The sheet.                                             |
+| `label`      | Option labels and the title.                           |
+| `muted`      | Search placeholder, section headings, the search icon. |
+| `accent`     | The check on the selected row and the A–Z index.       |
+
+```tsx
+await pickOption({
+  options: countries,
+  colors: { background: '#020617', label: '#f8fafc', muted: '#64748b', accent: '#f43f5e' },
+});
+```
+
+**iOS ignores them by design.** There the list _is_ the system sheet, and repainting it is the one thing that would make it look non-native.
 
 ## Example
 

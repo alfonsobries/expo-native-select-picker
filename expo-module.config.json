@@ -1,6 +1,9 @@
 {
-  "platforms": ["apple", "web"],
+  "platforms": ["apple", "android", "web"],
   "apple": {
-    "modules": ["ExpoIosSelectPickerModule"]
+    "modules": ["ExpoNativeSelectPickerModule"]
+  },
+  "android": {
+    "modules": ["expo.modules.nativeselectpicker.ExpoNativeSelectPickerModule"]
   }
 }
