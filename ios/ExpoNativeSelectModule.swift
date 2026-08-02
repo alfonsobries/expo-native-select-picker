@@ -16,12 +16,12 @@ struct SelectPresentOptions: Record {
   @Field var grouped: Bool?
 }
 
-public class ExpoIosSelectPickerModule: Module {
+public class ExpoNativeSelectModule: Module {
   public func definition() -> ModuleDefinition {
-    Name("ExpoIosSelectPicker")
+    Name("ExpoNativeSelect")
 
     AsyncFunction("presentAsync") { (options: SelectPresentOptions, promise: Promise) in
-      guard let presenter = ExpoIosSelectPickerModule.topViewController() else {
+      guard let presenter = ExpoNativeSelectModule.topViewController() else {
         promise.resolve(nil)
         return
       }

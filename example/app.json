@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "expo-ios-select-picker-example",
-    "slug": "expo-ios-select-picker-example",
+    "name": "expo-native-select-example",
+    "slug": "expo-native-select-example",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

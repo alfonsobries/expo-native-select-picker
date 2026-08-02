@@ -1,8 +1,8 @@
-# expo-ios-select-picker
+# expo-native-select
 
-[![npm version](https://img.shields.io/npm/v/expo-ios-select-picker.svg)](https://www.npmjs.com/package/expo-ios-select-picker)
-[![CI](https://github.com/alfonsobries/expo-ios-select-picker/actions/workflows/ci.yml/badge.svg)](https://github.com/alfonsobries/expo-ios-select-picker/actions/workflows/ci.yml)
-[![license](https://img.shields.io/npm/l/expo-ios-select-picker.svg)](./LICENSE)
+[![npm version](https://img.shields.io/npm/v/expo-native-select.svg)](https://www.npmjs.com/package/expo-native-select)
+[![CI](https://github.com/alfonsobries/expo-native-select/actions/workflows/ci.yml/badge.svg)](https://github.com/alfonsobries/expo-native-select/actions/workflows/ci.yml)
+[![license](https://img.shields.io/npm/l/expo-native-select.svg)](./LICENSE)
 
 Native iOS select picker for Expo and React Native: the **settings-style option list** — the same UIKit table iOS uses to pick your region — with a native search bar, A–Z sections with the side index, and a checkmark on the selected row. Call it from any trigger and it resolves with the picked value, like a `<select>` should.
 
@@ -34,7 +34,7 @@ On Android and web the helper resolves `null` so cross-platform code doesn't nee
 ## Installation
 
 ```sh
-npx expo install expo-ios-select-picker
+npx expo install expo-native-select
 ```
 
 Then rebuild your development build (`npx expo run:ios` or an EAS build). If you manage OTA updates with a fixed `runtimeVersion`, adding this package is a native change — bump it.
@@ -42,7 +42,7 @@ Then rebuild your development build (`npx expo run:ios` or an EAS build). If you
 ## Usage
 
 ```tsx
-import { pickOption } from 'expo-ios-select-picker';
+import { pickOption } from 'expo-native-select';
 
 const value = await pickOption({
   title: 'Country',

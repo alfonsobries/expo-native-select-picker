@@ -19,7 +19,7 @@ There is nothing to do manually — no `npm version`, no tags, no publish.
 
 The release workflow needs an npm automation token in the repository secrets:
 
-1. Create a **granular access token** at [npmjs.com → Access Tokens](https://www.npmjs.com/settings/alfonsobries/tokens) with read/write access to the `expo-ios-select-picker` package and **bypass 2FA on publish** enabled.
-2. Add it as the `NPM_TOKEN` secret: `gh secret set NPM_TOKEN --repo alfonsobries/expo-ios-select-picker`.
+1. Create a **granular access token** at [npmjs.com → Access Tokens](https://www.npmjs.com/settings/alfonsobries/tokens) with read/write access to the `expo-native-select` package and **bypass 2FA on publish** enabled.
+2. Add it as the `NPM_TOKEN` secret: `gh secret set NPM_TOKEN --repo alfonsobries/expo-native-select`.
 
 `GITHUB_TOKEN` is provided by Actions automatically.

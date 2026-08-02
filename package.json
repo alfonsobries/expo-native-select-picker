@@ -1,5 +1,5 @@
 {
-  "name": "expo-ios-select-picker",
+  "name": "expo-native-select",
   "version": "0.1.0",
   "description": "Native iOS select picker for Expo — the settings-style option list with search, A–Z index, and checkmark",
   "main": "build/index.js",
@@ -24,13 +24,13 @@
     "settings",
     "native"
   ],
-  "repository": "https://github.com/alfonsobries/expo-ios-select-picker",
+  "repository": "https://github.com/alfonsobries/expo-native-select",
   "bugs": {
-    "url": "https://github.com/alfonsobries/expo-ios-select-picker/issues"
+    "url": "https://github.com/alfonsobries/expo-native-select/issues"
   },
   "author": "Alfonso Bribiesca <alfonso@vexilo.com> (https://alfonsobries.com)",
   "license": "MIT",
-  "homepage": "https://github.com/alfonsobries/expo-ios-select-picker#readme",
+  "homepage": "https://github.com/alfonsobries/expo-native-select#readme",
   "devDependencies": {
     "@babel/core": "^7.26.0",
     "@semantic-release/changelog": "^6.0.3",

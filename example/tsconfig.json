@@ -3,8 +3,8 @@
   "compilerOptions": {
     "strict": true,
     "paths": {
-      "expo-ios-select-picker": ["../src/index"],
-      "expo-ios-select-picker/*": ["../src/*"]
+      "expo-native-select": ["../src/index"],
+      "expo-native-select/*": ["../src/*"]
     }
   }
 }
